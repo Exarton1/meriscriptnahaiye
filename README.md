@@ -19,13 +19,27 @@ This is a powerful Python script to optimize, clean, and tune your Linux VPS for
 - Must be run as **root** (with `sudo`)
 
 ## Usage
-1. **Upload `1.py` to your VPS.**
+1. **Upload `1.py` to your VPS** or use the one-command install below.
 2. **Run the script as root:**
    ```bash
    sudo python3 1.py
    ```
 3. **Follow the on-screen menu and prompts.**
    - The script will ask for confirmation before any risky operation.
+
+## One-Command Install via GitHub
+You can run the script directly from GitHub with:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Exarton1/meriscriptnahaiye/main/1.py | sudo python3
+```
+
+Or, to download and review first:
+
+```bash
+curl -O https://raw.githubusercontent.com/Exarton1/meriscriptnahaiye/main/1.py
+sudo python3 1.py
+```
 
 ## Menu Options
 - **1️⃣  MAX Network, RAM, Disk Boost**
