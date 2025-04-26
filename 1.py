@@ -1,5 +1,18 @@
 import subprocess
 import os
+import sys
+import shutil
+
+# Utility functions
+
+def is_linux():
+    return sys.platform.startswith("linux")
+
+def is_root():
+    return hasattr(os, "geteuid") and os.geteuid() == 0
+
+def has_cmd(cmd):
+    return shutil.which(cmd) is not None
 
 # --- COLORS ---
 GREEN = "\033[92m"
@@ -189,21 +202,23 @@ def security_hardening():
         if confirm("Enforce SSH key authentication only?"):
             safe_run(f"sed -i 's/^#PasswordAuthentication .*/PasswordAuthentication no/' {sshd_config}")
             safe_run(f"sed -i 's/^PasswordAuthentication .*/PasswordAuthentication no/' {sshd_config}")
-        # Limit login attempts
+        # limits login
         if confirm("Limit SSH login attempts (MaxAuthTries)?"):
             tries = input("Enter max SSH auth tries (default 3): ").strip() or "3"
             safe_run(f"sed -i 's/^#MaxAuthTries .*/MaxAuthTries {tries}/' {sshd_config}")
             safe_run(f"sed -i 's/^MaxAuthTries .*/MaxAuthTries {tries}/' {sshd_config}")
         print(f"{CYAN}Restarting SSH service...{RESET}")
         safe_run("systemctl restart sshd || systemctl restart ssh")
-    # Fail2Ban setup
+    # Fail2Ban setup hehe
     if has_cmd("fail2ban-client") or confirm("Install Fail2Ban for SSH brute-force protection?"):
         safe_run("apt install -y fail2ban")
         safe_run("systemctl enable fail2ban --now")
         print(f"{GREEN}Fail2Ban is now running. Default jail protects SSH.{RESET}")
     print(f"{GREEN}✅ Security Hardening Complete!{RESET}\n")
 
-def menu():
+import argparse
+
+def menu(choice_arg=None):
     banner()
     print(f"{CYAN}Choose your GOD MODE OPTIMIZATION:{RESET}")
     print(f"{GREEN}1️⃣  MAX Network, RAM, Disk Boost ⚡")
@@ -211,7 +226,16 @@ def menu():
     print(f"{RED}3️⃣  FULL SUPAR GOD MODE (Everything) 🚀")
     print(f"{YELLOW}4️⃣  SECURITY Hardening (Firewall & SSH & Fail2Ban){RESET}\n")
 
-    choice = input("Enter choice [1-4]: ").strip()
+    if choice_arg:
+        choice = str(choice_arg)
+        print(f"Auto-selected option: {choice}")
+    else:
+        try:
+            choice = input("Enter choice [1-4]: ").strip()
+        except EOFError:
+            print(f"{RED}No input detected. Exiting.{RESET}")
+            return
+
     if choice == "1":
         optimize_network_ram_disk()
     elif choice == "2":
@@ -224,4 +248,7 @@ def menu():
         print(f"{RED}❌ Invalid selection.{RESET}")
 
 if __name__ == "__main__":
-    menu()
+    parser = argparse.ArgumentParser(description="SUPAR GOD MODE VPS & NETWORK OPTIMIZER")
+    parser.add_argument('--choice', type=str, help='Menu choice to run automatically (1-4)')
+    args = parser.parse_args()
+    menu(choice_arg=args.choice)
