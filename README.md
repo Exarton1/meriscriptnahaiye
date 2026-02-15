@@ -58,5 +58,3 @@ sudo python3 1.py
 This script is provided as-is with no warranty. Use at your own risk. The author is not responsible for any damage or data loss resulting from its use.
 
 ---
-
-**Made by NINJA. Enhanced for safety and robustness.**
